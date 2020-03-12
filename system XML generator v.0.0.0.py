@@ -28,8 +28,8 @@ def main():
     if abort=="Y":
         exit()
     print("continuing")
-
-
+    system_setting=set_system()    
+    print(str(system_settings))
 
 
 
@@ -62,6 +62,20 @@ def test_file_existence(file_name):
     except FileNotFoundError:
         file_exist=False
     return(file_exist)
+
+
+
+
+
+def set_system():
+    bodies=input("Bodies?")
+    planets=input("planets?")
+    asteroids=input("asteroid?")
+    colonies=input("colonies?")
+    POI=input("POI?")
+    jump_points("Jump?")
+    result={"bodies":bodies,"planets":planets,"asteroids":asteroids,"colonies":colonies,"POI":POI,"FTL":jump_points}
+    return(result)
 
 
 
