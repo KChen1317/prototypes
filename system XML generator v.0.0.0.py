@@ -30,6 +30,7 @@ def main():
     print("continuing")
     system_setting=set_system()    
     print(str(system_settings))
+    system_gen(file_name,mode,system_setting)
 
 
 
@@ -79,6 +80,9 @@ def set_system():
 
 
 
+
+def system_gen(target_file,file_mode,settings):
+    asfds=1
 
 
 
