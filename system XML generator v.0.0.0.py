@@ -139,7 +139,12 @@ def system_gen(target_file,file_mode,settings):
     i=0
     while i<colonies_amt:
         i=i+1
-        
+        colony_id=str("colony "+str(i))
+        colony_name=random.randint(0,100)
+        colony_type=random.randint(0,9)     ### later determines whether orbit info counts
+        colony_orbit_range=random.randint(20,size)
+        colony_orbit_distance=round((pi*2*object_orbit_range)*(random.randint(0,360000)/360000),6)
+        colony_extra=random.randint(0,1000)
         
 
     
