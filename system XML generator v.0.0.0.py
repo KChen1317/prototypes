@@ -1,6 +1,6 @@
 ####     INSECURE    ####
 
-import xml.dom
+import xml.etree.ElementTree as ET
 import random
 
 def main():
@@ -32,6 +32,7 @@ def main():
     system_setting=set_system()    
     print(str(system_setting))
     system_data=system_gen(system_setting)
+    system_xml=create_system_xml(system_data)
 
 
 
@@ -70,6 +71,7 @@ def test_file_existence(file_name):
 
 
 def set_system():
+    system_name=input("Name?")
     system_id=input("system id?")
     bodies=input("Bodies?")
     planets=input("planets?")
@@ -78,7 +80,7 @@ def set_system():
     POI=input("POI?")
     jump_points=input("Jump?")
     seed=input("Seed?\nmust be int")
-    result={"system id":system_id,"bodies":bodies,"planets":planets,"objects":objects,"colonies":colonies,"POI":POI,"FTL":jump_points,"seed":seed}
+    result={"system name":system_name,"system id":system_id,"bodies":bodies,"planets":planets,"objects":objects,"colonies":colonies,"POI":POI,"FTL":jump_points,"seed":seed}
     return(result)
 
 
@@ -92,6 +94,7 @@ def system_gen(settings):
     POI_amt=int(settings["POI"])                    ### for any other objs that do not have a orbit and is not any other category
     FTL_amt=int(settings["FTL"])                    ### for any FTL related areas
     system_id=settings["system id"]
+    system_name=settings["system name"]
     bodies={"amt":bodies_amt}
     planets={"amt":planets_amt}
     objects={"amt":objects_amt}
@@ -171,10 +174,69 @@ def system_gen(settings):
         FTL_data={"name":FTL_name,"id":FTL_id,"type":FTL_type,"orbit range":FTL_bearing,"extra":FTL_extra}
         FTL[str(i)]=POI_data
     print(str(FTL))
-    system_data={"system id":system_id,"bodies":bodies,"planets":planets,"objects":objects,"colonies":colonies,"POI":POI,"FTL":FTL}
+    system_data={"system name":system_name,"system id":system_id,"bodies":bodies,"planets":planets,"objects":objects,"colonies":colonies,"POI":POI,"FTL":FTL}
     print("Done")
     print(str(system_data))
     return(system_data)
+
+
+
+def create_system_xml(data):
+    sys_id=data["system id"]
+    bodies=data["bodies"]
+    planets=data["planets"]
+    obkects=data["objects"]
+    colonies=data["colonies"]
+    POI=data["POI"]
+    FTL=data["FTL"]
+    root=ET.Element("system")
+    sys_id_xml=ET.Element("system id")
+    sys_id=data["system id"]
+    sys_id_xml.text=sys_id
+    sys_name_xml=ET.Element("system name")
+    sys_name=data["system name"]
+    sys_name_xml.text=sys_name
+    bodies_xml=ET.Element("bodies")     ### set bodies
+    i=0
+    size=bodies["amt"]
+    temp_list_1=[]
+    while i<size:
+        i=i+1
+        body=bodies[str(i)]             #### replace with iterators to auto fill stuff...
+        body_place_xml=ET.Element("body "+str(i))
+        body_id_xml=ET.Element("id")
+        body_id=body["id"]
+        body_id_xml.text=body_id
+        body_name_xml=ET.Element("name")
+        body_name=body["name"]
+        body_name_xml.text=body_name
+        body_type_xml=ET.Element("type")
+        body_type=body["type"]
+        body_type_xml.text=body_type
+        body_extra_xml=ET.Element("extra")
+        body_extra=body["extra"]
+        body_extra_xml.text=body_extra
+        temp_list_2=[]
+        temp_list_2.append(body_id_xml)
+        temp_list_2.append(body_name_xml)
+        temp_list_2.append(body_type_xml)
+        temp_list_2.append(body_extra_xml)
+        body_place_xml.extend(temp_list_2)
+        temp_list_1.append(body_place_xml)       
+    bodies_xml.extend(temp_list_1)
+    planets_xml=ET.Elements("planets")
+    i=0
+    size=planets[size]
+    temp_list_1=[]
+    while i<size:
+        i=i+1
+        planet=planets[str(i)]
+        planet_id_xml=ET.Element("planet "+str(i))
+        planet_id=planet["id"]
+        planet_id_xml.text=planet_id
+        planet_name_xml=ET.Element("name")
+        planet_name=planet["name"]
+        
 
 
 
