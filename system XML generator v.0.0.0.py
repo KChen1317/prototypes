@@ -111,7 +111,7 @@ def system_gen(settings):
         body_name=random.randint(0,100)             ###use random inputs here as placeholders
         body_type=random.randint(0,9)
         body_extra=random.randint(0,1000)
-        body_data={"name":body_name,"id":body_id,"type":body_type,"extra":body_extra}
+        body_data={"name":body_name,"id":body_id,"type":body_type,"extra":body_extra}   ### add distance from system center
         bodies[str(i)]=body_data
     print(str(bodies))
     i=0
@@ -191,31 +191,27 @@ def create_system_xml(data):
     FTL=data["FTL"]
     root=ET.Element("system")
     sys_id_xml=ET.Element("system id")
-    sys_id=data["system id"]
-    sys_id_xml.text=sys_id
+    sys_id_xml.text=data["system id"]
     sys_name_xml=ET.Element("system name")
-    sys_name=data["system name"]
-    sys_name_xml.text=sys_name
+    sys_name_xml.text=data["system name"]
     bodies_xml=ET.Element("bodies")     ### set bodies
     i=0
     size=bodies["amt"]
-    temp_list_1=[]
+    body_amt_xml=ET.Element("amt")
+    body_amt_xml.text=size
+    temp_list_1=[body_amt_xml]
     while i<size:
         i=i+1
         body=bodies[str(i)]             #### replace with iterators to auto fill stuff...
         body_place_xml=ET.Element("body "+str(i))
         body_id_xml=ET.Element("id")
-        body_id=body["id"]
-        body_id_xml.text=body_id
+        body_id_xml.text=body["id"]
         body_name_xml=ET.Element("name")
-        body_name=body["name"]
-        body_name_xml.text=body_name
+        body_name_xml.text=body["name"]
         body_type_xml=ET.Element("type")
-        body_type=body["type"]
-        body_type_xml.text=body_type
+        body_type_xml.text=body["type"]
         body_extra_xml=ET.Element("extra")
-        body_extra=body["extra"]
-        body_extra_xml.text=body_extra
+        body_extra_xml.text=body["extra"]
         temp_list_2=[]
         temp_list_2.append(body_id_xml)
         temp_list_2.append(body_name_xml)
@@ -224,19 +220,54 @@ def create_system_xml(data):
         body_place_xml.extend(temp_list_2)
         temp_list_1.append(body_place_xml)       
     bodies_xml.extend(temp_list_1)
-    planets_xml=ET.Elements("planets")
+    #print("body xml section-----")
+    #print(str(bodies_xml.text))
+    planets_xml=ET.Element("planets")
     i=0
     size=planets[size]
+    planet_amt_xml=ET.Element("amt")
+    planet_amt_xml.text=size
     temp_list_1=[]
     while i<size:
         i=i+1
         planet=planets[str(i)]
-        planet_id_xml=ET.Element("planet "+str(i))
-        planet_id=planet["id"]
-        planet_id_xml.text=planet_id
+        planet_place_xml=ET.Element("planet "+str(i))
+        planet_id_xml=ET.Element("id")
+        planet_id_xml.text=planet["id"]
         planet_name_xml=ET.Element("name")
-        planet_name=planet["name"]
-        
+        planet_name_xml.text=planet["name"]
+        planet_type_xml=ET.Element("type")
+        planet_type_xml.text=planet["type"]
+        planet_orbit_bearing_xml=ET.Element("orbit range")
+        planet_orbt_range_xml.text=planet["orbit range"]
+        planet_orbit_bearing_xml=ET.Element("orbit bearing")
+        planet_orbit_bearing_xml.text=planet["orbit bearing"]
+        planet_extra_xml=ET.Element("extra")
+        planet_extra_xml.text=planet["exra"]
+        temp_list_2=[]
+        temp_list_2.append(planet_id_xml)
+        temp_list_2.append(planet_name_xml)
+        temp_list_2.append(planet_type_xml)
+        temp_list_2.append(planet_orbit_range_xml)
+        temp_list_2.append(planet_orbit_bearing_xml)
+        temp_list_2.append(planet_extra_xml)
+        planet_place_xml.append(temp_list_2)
+        temp_list_1.append(planet_place_xml)
+    planets_xml.extend(temp_list_1)
+    #print("planet xml section-------")   find way to get data.....
+    #print(str(planets_xml.text))
+    objects_xml=ET.Element("objects")
+    i=0
+    size=objects["amt"]
+    object_amt_xml=ET.Element("amt")
+    object_amt_xml
+
+
+
+
+
+    #bodies,planets,objects,colonies,POI,FTL
+
 
 
 
