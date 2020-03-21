@@ -33,6 +33,7 @@ def main():
     print(str(system_setting))
     system_data=system_gen(system_setting)
     system_xml=create_system_xml(system_data)
+    write_xml(system_xml,file_name)
 
 
 
@@ -115,7 +116,7 @@ def system_gen(settings):
         bodies[str(i)]=body_data
     print(str(bodies))
     i=0
-    pi=3.14159265
+    pi=3.14159265           #### --WARN-- hard coded pi vaule (should not be in use due to ouput only having a bearing (in degrees))
     while i<planets_amt:
         i=i+1
         planet_id=str("planet "+str(i))
@@ -163,6 +164,7 @@ def system_gen(settings):
         POI_data={"name":POI_name,"id":POI_id,"type":POI_type,"orbit range":POI_orbit_range,"orbit bearing":POI_orbit_bearing,"extra":POI_extra}
         POI[str(i)]=POI_data
     print(str(POI))
+    i=0
     while i<FTL_amt:
         i=i+1
         FTL_id=str("POI "+str(i))
@@ -171,8 +173,8 @@ def system_gen(settings):
         FTL_orbit_range=random.randint(20,size+600)
         FTL_orbit_bearing=random.randint(0,360000)/1000
         FTL_extra=random.randint(0,1000)
-        FTL_data={"name":FTL_name,"id":FTL_id,"type":FTL_type,"orbit range":FTL_bearing,"extra":FTL_extra}
-        FTL[str(i)]=POI_data
+        FTL_data={"name":FTL_name,"id":FTL_id,"type":FTL_type,"orbit range":FTL_orbit_bearing,"orbit bearing":FTL_orbit_bearing,"extra":FTL_extra}
+        FTL[str(i)]=FTL_data
     print(str(FTL))
     system_data={"system name":system_name,"system id":system_id,"bodies":bodies,"planets":planets,"objects":objects,"colonies":colonies,"POI":POI,"FTL":FTL}
     print("Done")
@@ -185,10 +187,10 @@ def create_system_xml(data):
     sys_id=data["system id"]
     bodies=data["bodies"]
     planets=data["planets"]
-    obkects=data["objects"]
+    objects=data["objects"]
     colonies=data["colonies"]
-    POI=data["POI"]
-    FTL=data["FTL"]
+    POIs=data["POI"]
+    FTLs=data["FTL"]
     root=ET.Element("system")
     sys_id_xml=ET.Element("system id")
     sys_id_xml.text=data["system id"]
@@ -224,10 +226,10 @@ def create_system_xml(data):
     #print(str(bodies_xml.text))
     planets_xml=ET.Element("planets")
     i=0
-    size=planets[size]
+    size=planets["amt"]
     planet_amt_xml=ET.Element("amt")
     planet_amt_xml.text=size
-    temp_list_1=[]
+    temp_list_1=[planet_amt_xml]
     while i<size:
         i=i+1
         planet=planets[str(i)]
@@ -238,12 +240,12 @@ def create_system_xml(data):
         planet_name_xml.text=planet["name"]
         planet_type_xml=ET.Element("type")
         planet_type_xml.text=planet["type"]
-        planet_orbit_bearing_xml=ET.Element("orbit range")
-        planet_orbt_range_xml.text=planet["orbit range"]
+        planet_orbit_range_xml=ET.Element("orbit range")
+        planet_orbit_range_xml.text=planet["orbit range"]
         planet_orbit_bearing_xml=ET.Element("orbit bearing")
         planet_orbit_bearing_xml.text=planet["orbit bearing"]
         planet_extra_xml=ET.Element("extra")
-        planet_extra_xml.text=planet["exra"]
+        planet_extra_xml.text=planet["extra"]
         temp_list_2=[]
         temp_list_2.append(planet_id_xml)
         temp_list_2.append(planet_name_xml)
@@ -251,7 +253,7 @@ def create_system_xml(data):
         temp_list_2.append(planet_orbit_range_xml)
         temp_list_2.append(planet_orbit_bearing_xml)
         temp_list_2.append(planet_extra_xml)
-        planet_place_xml.append(temp_list_2)
+        planet_place_xml.extend(temp_list_2)
         temp_list_1.append(planet_place_xml)
     planets_xml.extend(temp_list_1)
     #print("planet xml section-------")   find way to get data.....
@@ -260,13 +262,142 @@ def create_system_xml(data):
     i=0
     size=objects["amt"]
     object_amt_xml=ET.Element("amt")
-    object_amt_xml
+    object_amt_xml.text=size
+    temp_list_1=[object_amt_xml]
+    while i<size:
+        i=i+1
+        object_=objects[str(i)]     ### object_ is used because object end up being a key word.... deal with it.
+        object_place_xml=ET.Element("object "+str(i))
+        object_id_xml=ET.Element("id")
+        object_id_xml.text=object_["id"]
+        object_name_xml=ET.Element("name")
+        object_name_xml.text=object_["name"]
+        object_type_xml=ET.Element("type")
+        object_type_xml.text=object_["type"]
+        object_orbit_range_xml=ET.Element("orbit range")
+        object_orbit_range_xml.text=object_["orbit range"]
+        object_orbit_bearing_xml=ET.Element("orbit bearing")
+        object_orbit_bearing_xml.text=object_["orbit bearing"]
+        object_extra_xml=ET.Element("extra")
+        object_extra_xml.text=object_["extra"]
+        temp_list_2=[]
+        temp_list_2.append(object_id_xml)
+        temp_list_2.append(object_name_xml)
+        temp_list_2.append(object_type_xml)
+        temp_list_2.append(object_orbit_range_xml)
+        temp_list_2.append(object_orbit_bearing_xml)
+        temp_list_2.append(object_extra_xml)
+        object_place_xml.extend(temp_list_2)
+        temp_list_1.append(object_place_xml)
+    objects_xml.extend(temp_list_1)
+    colonies_xml=ET.Element("colonies")
+    i=0
+    size=colonies["amt"]
+    colony_amt_xml=ET.Element("amt")
+    colony_amt_xml.text=size
+    temp_list_1=[colony_amt_xml]
+    while i<size:
+        i=i+1
+        colony=colonies[str(i)]
+        colony_place_xml=ET.Element("object "+str(i))
+        colony_id_xml=ET.Element("id")
+        colony_id_xml.text=colony["id"]
+        colony_name_xml=ET.Element("name")
+        colony_name_xml.text=colony["name"]
+        colony_type_xml=ET.Element("type")
+        colony_type_xml.text=colony["type"]
+        colony_orbit_range_xml=ET.Element("orbit range")
+        colony_orbit_range_xml.text=colony["orbit range"]
+        colony_orbit_bearing_xml=ET.Element("orbit bearing")
+        colony_orbit_bearing_xml.text=colony["orbit bearing"]
+        colony_extra_xml=ET.Element("extra")
+        colony_extra_xml.text=colony["extra"]
+        temp_list_2=[]
+        temp_list_2.append(colony_id_xml)
+        temp_list_2.append(colony_name_xml)
+        temp_list_2.append(colony_type_xml)
+        temp_list_2.append(colony_orbit_range_xml)
+        temp_list_2.append(colony_orbit_bearing_xml)
+        temp_list_2.append(colony_extra_xml)
+        colony_place_xml.extend(temp_list_2)
+        temp_list_1.append(colony_place_xml)
+    colonies_xml.extend(temp_list_1)
+    POI_xml=ET.Element("POI")
+    i=0
+    size=POIs["amt"]
+    POI_amt_xml=ET.Element("amt")
+    POI_amt_xml.text=size
+    temp_list_1=[POI_amt_xml]
+    while i<size:
+        i=i+1
+        POI=POIs[str(i)]
+        POI_place_xml=ET.Element("object "+str(i))
+        POI_id_xml=ET.Element("id")
+        POI_id_xml.text=POI["id"]
+        POI_name_xml=ET.Element("name")
+        POI_name_xml.text=POI["name"]
+        POI_type_xml=ET.Element("type")
+        POI_type_xml.text=POI["type"]
+        POI_orbit_range_xml=ET.Element("orbit range")
+        POI_orbit_range_xml.text=POI["orbit range"]
+        POI_orbit_bearing_xml=ET.Element("orbit bearing")
+        POI_orbit_bearing_xml.text=POI["orbit bearing"]
+        POI_extra_xml=ET.Element("extra")
+        POI_extra_xml.text=POI["extra"]
+        temp_list_2=[]
+        temp_list_2.append(POI_id_xml)
+        temp_list_2.append(POI_name_xml)
+        temp_list_2.append(POI_type_xml)
+        temp_list_2.append(POI_orbit_range_xml)
+        temp_list_2.append(POI_orbit_bearing_xml)
+        temp_list_2.append(POI_extra_xml)
+        POI_place_xml.extend(temp_list_2)
+        temp_list_1.append(POI_place_xml)
+    POI_xml.extend(temp_list_1)
+    FTL_xml=ET.Element("FTL")
+    i=0
+    size=FTLs["amt"]
+    FTL_amt_xml=ET.Element("amt")
+    FTL_amt_xml.text=size
+    temp_list_1=[FTL_amt_xml]
+    while i<size:
+        i=i+1
+        FTL=FTLs[str(i)]
+        FTL_place_xml=ET.Element("object "+str(i))
+        FTL_id_xml=ET.Element("id")
+        FTL_id_xml.text=FTL["id"]
+        FTL_name_xml=ET.Element("name")
+        FTL_name_xml.text=FTL["name"]
+        FTL_type_xml=ET.Element("type")
+        FTL_type_xml.text=FTL["type"]
+        FTL_orbit_range_xml=ET.Element("orbit range")
+        FTL_orbit_range_xml.text=FTL["orbit range"]
+        FTL_orbit_bearing_xml=ET.Element("orbit bearing")
+        FTL_orbit_bearing_xml.text=FTL["orbit bearing"]
+        FTL_extra_xml=ET.Element("extra")
+        FTL_extra_xml.text=FTL["extra"]
+        temp_list_2=[]
+        temp_list_2.append(FTL_id_xml)
+        temp_list_2.append(FTL_name_xml)
+        temp_list_2.append(FTL_type_xml)
+        temp_list_2.append(FTL_orbit_range_xml)
+        temp_list_2.append(FTL_orbit_bearing_xml)
+        temp_list_2.append(FTL_extra_xml)
+        FTL_place_xml.extend(temp_list_2)
+        temp_list_1.append(FTL_place_xml)
+    temp_list_1=[]
+    temp_list_1.append(sys_id_xml)
+    temp_list_1.append(sys_name_xml)
+    temp_list_1.append(bodies_xml)
+    temp_list_1.append(planets_xml)
+    temp_list_1.append(colonies_xml)
+    temp_list_1.append(POI_xml)
+    temp_list_1.append(FTL_xml)
+    root.extend(temp_list_1)
+    return(root)
 
 
 
-
-
-    #bodies,planets,objects,colonies,POI,FTL
 
 
 
